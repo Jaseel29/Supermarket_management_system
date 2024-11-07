@@ -65,6 +65,7 @@ def show_login_frame():
     button_register = tk.Button(frame_login, text="Register", command=lambda: show_register_frame(frame_login), bg="#608BC1", fg="white", font=("Arial", 12, "bold"))  # Muted blue button
     button_register.grid(row=4, columnspan=2, pady=20)
 
+
 # Function to handle the login process
 def login_func(entry_username, entry_password):
     username = entry_username.get()
