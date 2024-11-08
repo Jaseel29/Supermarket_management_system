@@ -3,7 +3,6 @@ from tkinter import messagebox
 from connection import create_connection
 import mysql.connector
 
-# Global variable to hold selected items (from product selection)
 selected_items = []
 
 # Function to show the products list

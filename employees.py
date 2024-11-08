@@ -5,7 +5,7 @@ from connection import create_connection
 
 def show_employees(frame, show_products):
     for widget in frame.winfo_children():
-        widget.destroy()  # Clear the frame
+        widget.destroy()
 
     conn = create_connection()
     if conn is None:

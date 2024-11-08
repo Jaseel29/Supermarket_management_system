@@ -19,7 +19,7 @@ def remove_placeholder(event, entry, text):
 app = tk.Tk()
 app.title("Supermarket Management System")
 app.geometry("1000x1200")
-app.configure(bg="#F3F3E0")  # Light cream background
+app.configure(bg="#F3F3E0")
 
 # Function to show the login form
 def show_login_frame():

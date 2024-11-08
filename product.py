@@ -7,7 +7,7 @@ from employees import show_employees, show_employee_entry
 
 
 def show_products(frame):
-    # Clear the frame before adding new content
+
     for widget in frame.winfo_children():
         widget.destroy()
 

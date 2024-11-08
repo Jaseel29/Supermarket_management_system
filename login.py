@@ -19,9 +19,7 @@ def login_func(entry_username, entry_password, frame):
 
     if result:
         messagebox.showinfo("Login Success", f"Welcome {username} ({result[0]})!")
-        # Destroy login frame to hide it
         entry_username.master.destroy()
-        # Show products page in the main frame
         show_products(frame)
     else:
         messagebox.showerror("Login Failed", "Invalid username or password.")

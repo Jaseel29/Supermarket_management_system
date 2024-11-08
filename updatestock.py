@@ -3,8 +3,6 @@ from tkinter import messagebox
 from connection import create_connection
 
 
-# Import show_products correctly with reference to the file where it's defined
-
 def show_add_product_ui(frame):
     # Clear the frame
     for widget in frame.winfo_children():
