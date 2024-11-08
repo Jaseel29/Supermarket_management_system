@@ -240,7 +240,7 @@ def show_products(frame):
             button_back.pack(pady=(10, 0))
 
             button_bill = tk.Button(frame, text="Calculate Bill",
-                                    command=lambda: show_billing_ui(frame, selected_products, customer_fname),
+                                    command=lambda: show_billing_ui(selected_products),
                                     bg="#4CAF50", fg="white", font=("Arial", 12))
             button_bill.pack(pady=(10, 0))
 
