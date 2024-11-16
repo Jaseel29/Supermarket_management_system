@@ -56,6 +56,7 @@ def show_login_frame():
     entry_password.config(fg="gray")
     entry_password.bind("<FocusIn>", lambda event: remove_placeholder(event, entry_password, "Enter Password"))
     entry_password.bind("<FocusOut>", lambda event: placeholder(event, entry_password, "Enter Password"))
+    
 
     # Login Button
     button_login = tk.Button(frame_login, text="Login", command=lambda: login_func(entry_username, entry_password), bg="#608BC1", fg="white", font=("Arial", 12, "bold"))  # Muted blue button
@@ -104,18 +105,18 @@ def show_register_frame(frame_login):
         widget.destroy()
 
     # Create registration form in the same frame
-    label_register = tk.Label(frame_login, text="Register New User", font=("Arial", 14, "bold"), fg="#133E87", bg="#CBDCEB")  # Deep blue text
+    label_register = tk.Label(frame_login, text="Register New User", font=("Arial", 14, "bold"), fg="#133E87", bg="#CBDCEB")
     label_register.grid(row=0, columnspan=2, pady=10)
 
     # Username Label and Entry
-    label_username_register = tk.Label(frame_login, text="Username:", font=("Arial", 12), fg="#133E87", bg="#CBDCEB")  # Deep blue text
+    label_username_register = tk.Label(frame_login, text="Username:", font=("Arial", 12), fg="#133E87", bg="#CBDCEB")
     label_username_register.grid(row=1, column=0, padx=10, pady=10)
 
     entry_username_register = tk.Entry(frame_login, width=25, font=("Arial", 12))
     entry_username_register.grid(row=1, column=1, padx=10, pady=10)
 
     # Password Label and Entry
-    label_password_register = tk.Label(frame_login, text="Password:", font=("Arial", 12), fg="#133E87", bg="#CBDCEB")  # Deep blue text
+    label_password_register = tk.Label(frame_login, text="Password:", font=("Arial", 12), fg="#133E87", bg="#CBDCEB")
     label_password_register.grid(row=2, column=0, padx=10, pady=10)
 
     entry_password_register = tk.Entry(frame_login, show="*", width=25, font=("Arial", 12))

@@ -64,7 +64,7 @@ def register_func(entry_username, entry_password, entry_designation, frame):
         entry_password.delete(0, tk.END)
         entry_designation.delete(0, tk.END)
 
-        # Optionally, you could close the register window and show the login window again
+
         entry_username.master.destroy()  # Close the registration window
 
     cursor.close()
