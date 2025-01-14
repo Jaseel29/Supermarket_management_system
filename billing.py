@@ -1,123 +1,128 @@
 import tkinter as tk
 from tkinter import messagebox
+from tkinter import ttk
 from connection import create_connection  # Assumes you have a function to create a database connection
 
-selected_products = []  # This will hold the list of selected products (product_id, quantity, unit_price)
+selected_products = []  # List of selected products (product_id, quantity)
+customer_id = 1  # Set the customer ID (replace this with actual logic if needed)
 
-# Function to calculate and save the bill
-def calculate_and_save_bill(customer_name, frame):
-    conn = create_connection()
-    if conn is None:
-        messagebox.showerror("Database Error", "Unable to connect to the database.")
+# Function to display the billing UI and calculate the total bill
+def show_billing_ui(customer_id, selected_products):
+    """Displays the billing UI with selected products and calculates the total bill."""
+    if not selected_products:
+        messagebox.showwarning("No Products", "No products selected!")
         return
 
-    try:
-        cursor = conn.cursor()
+    billing_window = tk.Toplevel()
+    billing_window.title("Billing Details")
+    billing_window.geometry("600x400")
+    billing_window.config(bg="#e6f7ff")
 
-        # Fetch customer details
-        query = """
-            SELECT customerID, CONCAT(Fname, ' ', Lname) AS full_name 
-            FROM CUSTOMER 
-            WHERE CONCAT(Fname, ' ', Lname) = %s
-        """
-        cursor.execute(query, (customer_name,))
-        customer = cursor.fetchone()
+    tk.Label(billing_window, text="Billing Details", font=("Arial", 16, "bold"), bg="#e6f7ff").pack(pady=(10, 5))
 
-        if not customer:
-            messagebox.showerror("Error", f"Customer {customer_name} not found in the database.")
-            return
+    # Columns for the treeview to show product details
+    columns = ('Product Name', 'Quantity', 'Unit Price', 'Total Price')
+    tree_billing = ttk.Treeview(billing_window, columns=columns, show='headings', height=12)  # Use ttk.Treeview
+    tree_billing.tag_configure('evenrow', background="#f0f0f0")
+    tree_billing.tag_configure('oddrow', background="#ffffff")
 
-        customer_id = customer[0]
-        total_amount = 0
+    col_widths = [140, 100, 100, 120]
+    for col, width in zip(columns, col_widths):
+        tree_billing.heading(col, text=col)
+        tree_billing.column(col, width=width, anchor='center')
 
-        # Calculate total amount and display items
-        for pid, quantity in selected_products:
-            cursor.execute("SELECT Pname, Ptype, Pprice FROM PRODUCT WHERE Pid = %s", (pid,))
-            product = cursor.fetchone()
+    tree_billing.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-            if product:
-                pname, ptype, unit_price = product
-                total_price = unit_price * quantity
-                total_amount += total_price
-            else:
-                messagebox.showerror("Error", f"Product with ID {pid} not found.")
-                return
+    total_bill = 0  # Initialize the total bill
 
-        # Insert into BILLING_SUMMARY
-        insert_summary_query = """
-            INSERT INTO BILLING_SUMMARY (totalAmount)
-            VALUES (%s)
-        """
-        cursor.execute(insert_summary_query, (total_amount,))
-        billing_summary_id = cursor.lastrowid
+    # Loop to populate the tree view with the selected products and calculate the total bill
+    for i, item in enumerate(selected_products):
+        pid, quantity = item[0], item[1]  # Correct unpacking
 
-        # Insert each product into BILLING
-        for pid, quantity in selected_products:
-            cursor.execute("SELECT Pprice FROM PRODUCT WHERE Pid = %s", (pid,))
-            unit_price = cursor.fetchone()[0]
-
-            insert_billing_query = """
-                INSERT INTO BILLING (Pid, Pquantity, unitprice, billing_summary_id)
-                VALUES (%s, %s, %s, %s)
-            """
-            cursor.execute(insert_billing_query, (pid, quantity, unit_price, billing_summary_id))
-
-        conn.commit()
-        messagebox.showinfo("Success", f"Bill for {customer_name} saved successfully!\nTotal Amount: ${total_amount:.2f}")
-
-        # Reset selected items after saving
-        selected_products.clear()
-
-    except Exception as e:
-        messagebox.showerror("Error", f"An error occurred: {e}")
-    finally:
+        conn = create_connection()
         if conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT Pname, Pprice FROM PRODUCT WHERE Pid = %s", (pid,))
+            product = cursor.fetchone()
+            if product:
+                pname, unit_price = product
+                total_price = unit_price * quantity  # Calculate the total price for the product
+                total_bill += total_price  # Add to total bill
+
+                # Insert product details into the Treeview
+                tree_billing.insert('', tk.END, values=(pname, quantity, unit_price, total_price),
+                                    tags=('evenrow' if i % 2 == 0 else 'oddrow'))
             cursor.close()
             conn.close()
+        else:
+            messagebox.showerror("Database Error", "Unable to connect to the database.")
+            return
 
+    # Display total bill
+    total_label = tk.Label(billing_window, text=f"Total Bill: ₹{total_bill:.2f}", font=("Arial", 14, "bold"), bg="#e6f7ff", fg="#333")
+    total_label.pack(pady=10)
 
-# Example function to add a product to the selected_items list
+    # Function to save the bill in the database
+    def save_bill_to_db():
+        conn = create_connection()
+        if conn is None:
+            messagebox.showerror("Database Error", "Unable to connect to the database.")
+            return
+
+        try:
+            cursor = conn.cursor()
+
+            # Insert into BILLING_SUMMARY table
+            insert_summary_query = """
+                INSERT INTO BILLING_SUMMARY (customerID, totalAmount)
+                VALUES (%s, %s)
+            """
+            cursor.execute(insert_summary_query, (customer_id, total_bill))
+            billing_summary_id = cursor.lastrowid  # Get the last inserted ID
+
+            # Insert each product into BILLING table
+            for pid, quantity in selected_products:
+                cursor.execute("SELECT Pprice FROM PRODUCT WHERE Pid = %s", (pid,))
+                unit_price = cursor.fetchone()[0]
+
+                insert_billing_query = """
+                    INSERT INTO BILLING (billing_summary_id, Pid, Pquantity, unitprice)
+                    VALUES (%s, %s, %s, %s)
+                """
+                cursor.execute(insert_billing_query, (billing_summary_id, pid, quantity, unit_price))
+
+            # Commit the transaction
+            conn.commit()
+
+            # Show success message
+            messagebox.showinfo("Success", f"Bill saved successfully!\nTotal Bill: ₹{total_bill:.2f}")
+            selected_products.clear()  # Clear the cart after saving the bill
+
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred while saving the bill: {e}")
+        finally:
+            if conn:
+                cursor.close()
+                conn.close()
+
+    # Add "Save Bill" Button
+    save_button = tk.Button(billing_window, text="Save Bill", command=save_bill_to_db, bg="#4CAF50", fg="white", font=("Arial", 12))
+    save_button.pack(pady=10)
+
+    # Add Close Button
+    tk.Button(billing_window, text="Cancel", command=lambda: show_billing_ui(customer_id,selected_products), bg="#f44336", fg="white", font=("Arial", 12)).pack(pady=10)
+
+# Example function to add a product to the selected_products list
 def add_to_cart(product_id, quantity):
+    """Add product to the selected products list."""
+    # Check if the product_id already exists in the selected products list
+    for idx, item in enumerate(selected_products):
+        if item[0] == product_id:
+            selected_products[idx] = (product_id, selected_products[idx][1] + quantity)  # Update quantity
+            return
+
+    # If the product doesn't exist, add a new entry to the list
     selected_products.append((product_id, quantity))
 
-
-# Function to show the billing screen
-def show_billing_ui(frame, customer_name):
-    for widget in frame.winfo_children():
-        widget.destroy()  # Clear the frame
-
-    tk.Label(frame, text=f"Customer Name: {customer_name}", font=("Arial", 14)).grid(row=0, column=0, columnspan=6, pady=10)
-
-    # Display selected items
-    columns = ["Product ID", "Product Name", "Quantity", "Unit Price", "Total"]
-    for col_num, col_name in enumerate(columns):
-        tk.Label(frame, text=col_name, font=("Arial", 10, "bold")).grid(row=1, column=col_num, padx=5, pady=5)
-
-    total_amount = 0
-    for row_num, (pid, quantity) in enumerate(selected_items, start=2):
-        conn = create_connection()
-        cursor = conn.cursor()
-        cursor.execute("SELECT Pname, Pprice FROM PRODUCT WHERE Pid = %s", (pid,))
-        pname, unit_price = cursor.fetchone()
-        total_price = unit_price * quantity
-
-        tk.Label(frame, text=pid).grid(row=row_num, column=0, padx=5, pady=5)
-        tk.Label(frame, text=pname).grid(row=row_num, column=1, padx=5, pady=5)
-        tk.Label(frame, text=quantity).grid(row=row_num, column=2, padx=5, pady=5)
-        tk.Label(frame, text=f"${unit_price:.2f}").grid(row=row_num, column=3, padx=5, pady=5)
-        tk.Label(frame, text=f"${total_price:.2f}").grid(row=row_num, column=4, padx=5, pady=5)
-
-        total_amount += total_price
-        conn.close()
-
-    # Display total amount
-    tk.Label(frame, text="Total Amount:", font=("Arial", 12, "bold")).grid(row=row_num + 1, column=3, pady=10)
-    tk.Label(frame, text=f"${total_amount:.2f}", font=("Arial", 12)).grid(row=row_num + 1, column=4, pady=10)
-
-    # Add Save Bill Button
-    save_button = tk.Button(frame, text="Save Bill", command=lambda: calculate_and_save_bill(customer_name, frame), bg="#4CAF50", fg="white")
-    save_button.grid(row=row_num + 2, column=4, pady=10)
-
-    # Add Back Button
-    back_button = tk.Button(frame, text="Back", command=lambda: frame.destroy(), bg="red", fg="white")
-    back_button.grid(row=row_num + 2, column=0, pady=10)
+    # Debug print to verify the added product
+    print(f"Product added to cart: ID={product_id}, Quantity={quantity}")

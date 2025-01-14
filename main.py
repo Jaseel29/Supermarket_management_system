@@ -177,7 +177,6 @@ def register_user(entry_username, entry_password, entry_designation):
 
     cursor.close()
     conn.close()
-
 # Start with the login frame
 show_login_frame()
 
