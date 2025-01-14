@@ -140,6 +140,8 @@ def show_products(frame):
                 return
 
             total_needed_qty_per_product = {}  # Dictionary to track total needed quantity per product
+            total_bill = 0  # Initialize total bill variable
+
             for i, var in enumerate(checkbox_vars):
                 if var.get():  # If the product is selected
                     product = products[i]
@@ -164,6 +166,7 @@ def show_products(frame):
 
                     # Calculate the total amount for each selected product
                     total_amount = int(product[1]) * needed_qty  # product[1] is the price
+                    total_bill += total_amount  # Add this product's total to the overall bill
                     selected_products.append((*product, needed_qty, total_amount))
 
             if selected_products:
@@ -174,7 +177,7 @@ def show_products(frame):
                 save_customer_details()
 
                 # Display the selected products
-                display_selected_products(selected_products, customer_fname)
+                display_selected_products(selected_products, customer_fname, total_bill)
             else:
                 messagebox.showwarning("No Selection", "Please select at least one product.")
 
@@ -211,8 +214,7 @@ def show_products(frame):
                     cursor.close()
                     conn.close()
 
-        # Display selected products in a new frame
-        def display_selected_products(selected_products, customer_fname):
+        def display_selected_products(selected_products, customer_fname, total_bill):
             for widget in frame.winfo_children():
                 widget.destroy()
 
@@ -229,19 +231,23 @@ def show_products(frame):
                 tree_selected.heading(col, text=col)
                 tree_selected.column(col, width=width, anchor='center')
 
-            tree_selected.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+            tree_selected.pack(fill=tk.BOTH, expand=True, padx=20, pady=10)
 
-            for i, product in enumerate(selected_products):
-                tree_selected.insert('', tk.END, values=product, tags=('evenrow' if i % 2 == 0 else 'oddrow'))
+            for idx, product in enumerate(selected_products):
+                tree_selected.insert("", "end", values=product, tags=('evenrow' if idx % 2 == 0 else 'oddrow'))
 
-            button_back = tk.Button(frame, text="Back to Products", command=lambda: show_products(frame), bg="#4CAF50",
-                                    fg="white", font=("Arial", 12))
-            button_back.pack(pady=(10, 0))
+            tk.Label(frame, text=f"Total Bill: ₹{total_bill}", font=("Arial", 14, 'bold'), bg="#e6f7ff").pack(pady=10)
 
-            button_bill = tk.Button(frame, text="Calculate Bill",
-                                    command=lambda: show_billing_ui(selected_products),
-                                    bg="#4CAF50", fg="white", font=("Arial", 12))
-            button_bill.pack(pady=(10, 0))
+            # Add buttons for further actions
+            button_frame = tk.Frame(frame, bg="#e6f7ff")
+            button_frame.pack(side=tk.BOTTOM, fill=tk.X, pady=10)
+            cancel_button = tk.Button(button_frame, text="Cancel",
+                                      command=lambda: show_selected_products,
+                                      font=("Arial", 12), bg="#ff4d4d", fg="white", relief="solid")
+            cancel_button.pack(side=tk.LEFT, padx=10)
+            save_button = tk.Button(button_frame, text="Save Bill", command=save_customer_details,
+                                    font=("Arial", 12), bg="#4CAF50", fg="white", relief="solid")
+            save_button.pack(side=tk.LEFT, padx=10)
 
         # Buttons at the bottom aligned
         # Show Selected Products Button
@@ -261,6 +267,9 @@ def show_products(frame):
                                           fg="white", font=("Arial", 12))
         button_list_employees.pack(pady=(5, 10), side=tk.BOTTOM)
 
+        proceed_button = tk.Button(product_frame, text="Proceed", font=("Arial", 14), bg="#4CAF50", fg="white",
+                                   command=show_selected_products)
+        proceed_button.pack(pady=20)
         # Add button to open the add product UI in the bottom left corner
         button_add_product = tk.Button(frame, text="Add New Product", command=lambda: show_add_product_ui(frame),
                                        bg="#4CAF50", fg="white", font=("Arial", 12))
