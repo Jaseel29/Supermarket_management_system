@@ -45,7 +45,7 @@ In **PyCharm**, the libraries are installed via the **Python Interpreter**. Here
 
 This will allow you to manage dependencies properly within PyCharm and run your code successfully.
 
-A Management system build using Tkinter which mainly used for billing system to add and update the product stock, add and view employee detilas and show the bill of the items taken by the customer. You need to make a database in MySql and make a connection with the interface inorder to make the updates.
+A Management system build using Tkinter which mainly used for billing system to add and update the product stock, add and view employee detilas and show the bill of the items taken by the customer. You need to make a database in MySql and make a connection with the interface inorder to make the updates.The connection code to connect to the interface is written in the connection.py file, in that you need to provide you username,password and the database name which you provided in the MySql command client.
 
 1.Register 
 
