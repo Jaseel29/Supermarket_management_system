@@ -45,7 +45,9 @@ In **PyCharm**, the libraries are installed via the **Python Interpreter**. Here
 
 This will allow you to manage dependencies properly within PyCharm and run your code successfully.
 
-A Management system build using Tkinter which mainly used for billing system to add and update the product stock, add and view employee detilas and show the bill of the items taken by the customer
+A Management system build using Tkinter which mainly used for billing system to add and update the product stock, add and view employee detilas and show the bill of the items taken by the customer. You need to make a database in MySql and make a connection with the interface inorder to make the updates.The connection code to connect to the interface is written in the connection.py file, in that you need to provide you username,password and the database name which you provided in the MySql command client.
+
+Run the main.py file to see the interface
 
 1.Register 
 
@@ -61,8 +63,10 @@ A Management system build using Tkinter which mainly used for billing system to 
 
 6.Billing
 
-![Screenshot 2025-01-15 004455](https://github.com/user-attachments/assets/4203621b-bf5d-400e-8987-3abaa5cc49db)
-![Screenshot 2025-01-15 005458](https://github.com/user-attachments/assets/6b75b6bf-7bc4-4b05-9c19-20fe400eecc3)
+## Attaching the project report: [Project Report.pdf](https://github.com/user-attachments/files/18423077/Project.Report.pdf)
+
+![Screenshot 2025-01-15 123251](https://github.com/user-attachments/assets/c8c76b01-8533-4bc2-b9dc-7b7e47537e40)
+![Screenshot 2025-01-15 124215](https://github.com/user-attachments/assets/17d000b1-ea93-44ff-909d-74974bc30cd8)
 ![Screenshot 2025-01-15 004546](https://github.com/user-attachments/assets/00b7178d-47ca-4f59-bffa-132c3ce37e4b)
 ![Screenshot 2025-01-15 004559](https://github.com/user-attachments/assets/c5e9686b-ca51-40ab-a4d0-fe6f452855c2)
 ![Screenshot 2025-01-15 004610](https://github.com/user-attachments/assets/06a917fe-795a-4c9b-81db-4845a3a15ff7)
