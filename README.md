@@ -62,7 +62,7 @@ A Management system build using Tkinter which mainly used for billing system to 
 6.Billing
 
 ![Screenshot 2025-01-15 123251](https://github.com/user-attachments/assets/c8c76b01-8533-4bc2-b9dc-7b7e47537e40)
-![Screenshot 2025-01-15 005458](https://github.com/user-attachments/assets/6b75b6bf-7bc4-4b05-9c19-20fe400eecc3)
+![Screenshot 2025-01-15 124215](https://github.com/user-attachments/assets/17d000b1-ea93-44ff-909d-74974bc30cd8)
 ![Screenshot 2025-01-15 004546](https://github.com/user-attachments/assets/00b7178d-47ca-4f59-bffa-132c3ce37e4b)
 ![Screenshot 2025-01-15 004559](https://github.com/user-attachments/assets/c5e9686b-ca51-40ab-a4d0-fe6f452855c2)
 ![Screenshot 2025-01-15 004610](https://github.com/user-attachments/assets/06a917fe-795a-4c9b-81db-4845a3a15ff7)
