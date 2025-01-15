@@ -63,6 +63,8 @@ Run the main.py file to see the interface
 
 6.Billing
 
+## Attaching the project report: [Project Report.pdf](https://github.com/user-attachments/files/18423077/Project.Report.pdf)
+
 ![Screenshot 2025-01-15 123251](https://github.com/user-attachments/assets/c8c76b01-8533-4bc2-b9dc-7b7e47537e40)
 ![Screenshot 2025-01-15 124215](https://github.com/user-attachments/assets/17d000b1-ea93-44ff-909d-74974bc30cd8)
 ![Screenshot 2025-01-15 004546](https://github.com/user-attachments/assets/00b7178d-47ca-4f59-bffa-132c3ce37e4b)
