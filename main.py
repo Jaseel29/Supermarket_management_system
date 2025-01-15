@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import messagebox
 from connection import create_connection  # Ensure you have your database connection
 from product import show_products  # Assuming your product UI code is in products.py
+from PIL import Image, ImageTk
 
 # Placeholder functions for Entry Fields
 def placeholder(event, entry, text):
@@ -27,7 +28,23 @@ def show_login_frame():
     for widget in app.winfo_children():
         widget.destroy()
 
-    # Create login frame
+    try:
+        bg_image = Image.open("supermarket.jpg")  # Replace with your image file path
+        bg_image = bg_image.resize((2000, 1200), Image.Resampling.LANCZOS)  # Adjust to your window size
+        bg_photo = ImageTk.PhotoImage(bg_image)
+
+        # Create a Label widget to display the image
+        bg_label = tk.Label(app, image=bg_photo)
+        bg_label.image = bg_photo  # Keep a reference to prevent garbage collection
+        bg_label.place(x=0, y=0, relwidth=1, relheight=1)  # Fill the window with the image
+    except FileNotFoundError:
+        messagebox.showerror("Error", "Background image not found. Ensure 'supermarket.jpg' is in the same directory.")
+        return
+
+    # Additional widgets and UI elements go here
+
+
+# Create login frame
     frame_login = tk.Frame(app, bg="#CBDCEB", width=500, height=500)  # Soft blue background
     frame_login.place(relx=0.5, rely=0.4, anchor="center")
 

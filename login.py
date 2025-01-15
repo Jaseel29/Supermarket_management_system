@@ -9,10 +9,6 @@ def main():
     root.title("Login Page")
     root.geometry("600x400")  # Set a larger window size for better visualization
 
-    # Load and set the background image
-    bg_image = Image.open("supermarket.jpg")
-    bg_image = bg_image.resize((600, 400), Image.Resampling.LANCZOS)
-    bg_photo = ImageTk.PhotoImage(bg_image)
 
     # Create a Canvas to display the background
     canvas = tk.Canvas(root, width=600, height=400)
