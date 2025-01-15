@@ -7,20 +7,19 @@ from product import show_products
 def main():
     root = tk.Tk()
     root.title("Login Page")
-    root.geometry("600x400")  # Set a larger window size for better visualization
+    root.geometry("600x400")
 
 
-    # Create a Canvas to display the background
     canvas = tk.Canvas(root, width=600, height=400)
     canvas.pack(fill="both", expand=True)
-    canvas.bg_photo = bg_photo  # Keep a reference to avoid garbage collection
+    canvas.bg_photo = bg_photo
     canvas.create_image(0, 0, image=bg_photo, anchor="nw")
 
-    # Add a semi-transparent frame for the login form
+
     frame = tk.Frame(root, bg="white", bd=2, relief="ridge")
     frame.place(relwidth=0.35, relheight=0.4, relx=0.325, rely=0.3)
 
-    # Add form labels and entries
+
     label_username = tk.Label(frame, text="Username", bg="white")
     label_username.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 

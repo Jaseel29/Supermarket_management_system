@@ -10,7 +10,7 @@ def show_products(frame):
     for widget in frame.winfo_children():
         widget.destroy()
 
-    # Create a frame to hold the product details
+
     product_frame = tk.Frame(frame, bg="#e6f7ff", width=1200, height=700)
     product_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
 
@@ -29,7 +29,7 @@ def show_products(frame):
             messagebox.showwarning("No Products", "No products available in the database.")
             return
 
-        # Customer Details Entry
+
         customer_details_frame = tk.Frame(product_frame, bg="#e6f7ff")
         customer_details_frame.pack(side=tk.TOP, fill=tk.X, pady=10)
 
@@ -42,26 +42,26 @@ def show_products(frame):
             entry.pack(side=tk.LEFT, padx=5)
             customer_entries.append(entry)
 
-        # Scrollbar for the product list
+
         scrollbar = ttk.Scrollbar(product_frame, orient="vertical")
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        # Create a canvas to hold the scrollable frame
+
         canvas = tk.Canvas(product_frame, yscrollcommand=scrollbar.set, width=1350, height=500)
         scrollbar.config(command=canvas.yview)
         canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-        # Frame inside canvas for checkboxes and product details
+
         product_list_frame = tk.Frame(canvas)
         canvas.create_window((0, 0), window=product_list_frame, anchor='nw')
 
-        # List to hold checkbox variables and quantity entry boxes
+
         checkbox_vars = []
         quantity_entries = []
 
-        # Add headings
+
         headings = ["Select", "Product Name", "Price", "Product Type", "Available Quantity", "Needed Quantity"]
-        col_widths = [10, 30, 15, 15, 15, 25]  # Adjusted column widths for better spacing
+        col_widths = [10, 30, 15, 15, 15, 25]
         header_frame = tk.Frame(product_list_frame)
         header_frame.grid(row=0, column=0, columnspan=len(headings), padx=5, pady=5, sticky="ew")
 
@@ -70,15 +70,15 @@ def show_products(frame):
                              width=col_widths[col_num], anchor="w")
             label.grid(row=0, column=col_num, padx=5, pady=5, sticky="w")
 
-        # Insert checkboxes, available quantity, and needed quantity entry
+
         for row_num, product in enumerate(products, start=1):
             var = tk.BooleanVar()
             checkbox_vars.append(var)
             tk.Checkbutton(product_list_frame, variable=var).grid(row=row_num, column=0, padx=5, pady=5)
 
-            # Display product details in columns
+
             for col_num, detail in enumerate(product, start=1):
-                if col_num == 4:  # Available Quantity Column
+                if col_num == 4:
                     tk.Label(
                         product_list_frame,
                         text=detail,
@@ -89,9 +89,9 @@ def show_products(frame):
                         anchor="w"
                     ).grid(row=row_num, column=col_num, padx=5, pady=5, sticky="w")
 
-                    # Needed Quantity Column - Adjust the gap by changing padx
+
                     quantity_entry = tk.Entry(product_list_frame, font=('Arial', 10), width=col_widths[5])
-                    quantity_entry.grid(row=row_num, column=col_num + 1, padx=(20, 50), pady=15)  # Increased padx here
+                    quantity_entry.grid(row=row_num, column=col_num + 1, padx=(20, 50), pady=15)
                     quantity_entries.append(quantity_entry)
 
                 else:
@@ -105,11 +105,11 @@ def show_products(frame):
                         anchor="w"
                     ).grid(row=row_num, column=col_num, padx=20, pady=5, sticky="w")
 
-        # Update the canvas scroll region after populating
+
         product_list_frame.update_idletasks()
         canvas.config(scrollregion=canvas.bbox("all"))
 
-        # Function to save customer details to the database
+
         def save_customer_details():
             fname, lname, email, phone, address = [entry.get().strip() for entry in customer_entries]
             if not (fname and lname and email and phone):
@@ -130,7 +130,7 @@ def show_products(frame):
                     cursor.close()
                     conn.close()
 
-        # Function to retrieve and display selected products
+
         def show_selected_products():
             selected_products = []
             customer_fname = customer_entries[0].get().strip()
@@ -143,46 +143,46 @@ def show_products(frame):
             total_bill = 0  # Initialize total bill variable
 
             for i, var in enumerate(checkbox_vars):
-                if var.get():  # If the product is selected
+                if var.get():
                     product = products[i]
                     needed_qty_str = quantity_entries[i].get().strip()
 
-                    if not needed_qty_str:  # Check if the entry is empty
+                    if not needed_qty_str:
                         messagebox.showerror("Invalid Quantity", "Please enter a quantity for the product.")
                         return
 
                     try:
-                        needed_qty = int(needed_qty_str)  # Try converting the entry to an integer
+                        needed_qty = int(needed_qty_str)
                     except ValueError:
                         messagebox.showerror("Invalid Quantity", "Please enter a valid number for the needed quantity.")
                         return
 
-                    # Track the total needed quantity per product
-                    product_name = product[0]  # Assuming product[0] is the product name
+
+                    product_name = product[0]
                     if product_name in total_needed_qty_per_product:
                         total_needed_qty_per_product[product_name] += needed_qty
                     else:
                         total_needed_qty_per_product[product_name] = needed_qty
 
-                    # Calculate the total amount for each selected product
-                    total_amount = int(product[1]) * needed_qty  # product[1] is the price
-                    total_bill += total_amount  # Add this product's total to the overall bill
+
+                    total_amount = int(product[1]) * needed_qty
+                    total_bill += total_amount
                     selected_products.append((*product, needed_qty, total_amount))
 
             if selected_products:
-                # Update the stock after processing all selected products
+
                 update_stock(total_needed_qty_per_product)
 
-                # Save customer details before showing the selected products
+
                 save_customer_details()
 
-                # Display the selected products
+
                 display_selected_products(selected_products, customer_fname, total_bill)
             else:
                 messagebox.showwarning("No Selection", "Please select at least one product.")
 
         def update_stock(total_needed_qty_per_product):
-            """Update the stock in the database based on the total quantity needed for each selected product."""
+
             conn = create_connection()
             if conn:
                 cursor = conn.cursor()
@@ -238,7 +238,7 @@ def show_products(frame):
 
             tk.Label(frame, text=f"Total Bill: ₹{total_bill}", font=("Arial", 14, 'bold'), bg="#e6f7ff").pack(pady=10)
 
-            # Add buttons for further actions
+
             button_frame = tk.Frame(frame, bg="#e6f7ff")
             button_frame.pack(side=tk.BOTTOM, fill=tk.X, pady=10)
             cancel_button = tk.Button(button_frame, text="Cancel",
@@ -249,19 +249,18 @@ def show_products(frame):
                                     font=("Arial", 12), bg="#4CAF50", fg="white", relief="solid")
             save_button.pack(side=tk.LEFT, padx=10)
 
-        # Buttons at the bottom aligned
-        # Show Selected Products Button
+
         button_get_selected = tk.Button(frame, text="Show Selected Products", command=show_selected_products,
                                         bg="#4CAF50", fg="white", font=("Arial", 12))
         button_get_selected.pack(pady=(10, 5), side=tk.BOTTOM)
 
-        # Add Employee Button
+
         button_employee_entry = tk.Button(frame, text="Add Employee",
                                           command=lambda: show_employee_entry(frame, show_products), bg="#4CAF50",
                                           fg="white", font=("Arial", 12))
         button_employee_entry.pack(pady=(5, 5), side=tk.BOTTOM)
 
-        # List Employees Button
+
         button_list_employees = tk.Button(frame, text="List Employees",
                                           command=lambda: show_employees(frame, show_products), bg="#4CAF50",
                                           fg="white", font=("Arial", 12))
@@ -270,7 +269,7 @@ def show_products(frame):
         proceed_button = tk.Button(product_frame, text="Proceed", font=("Arial", 14), bg="#4CAF50", fg="white",
                                    command=show_selected_products)
         proceed_button.pack(pady=20)
-        # Add button to open the add product UI in the bottom left corner
+
         button_add_product = tk.Button(frame, text="Add New Product", command=lambda: show_add_product_ui(frame),
                                        bg="#4CAF50", fg="white", font=("Arial", 12))
         button_add_product.place(relx=0.0, rely=1.0, anchor="sw", x=20, y=-20)
@@ -283,21 +282,21 @@ def show_products(frame):
 
 
 def add_product_button_clicked(product_id_entry, product_name_entry, product_price_entry, product_type_entry, stock_quantity_entry, product_listbox):
-    """Handles the 'Add Product' button click."""
+
     try:
-        # Gather product details from the entry fields
+
         product_id = product_id_entry.get().strip()
         product_name = product_name_entry.get().strip()
         product_price = float(product_price_entry.get().strip())
         product_type = product_type_entry.get().strip()
         new_stock_quantity = int(stock_quantity_entry.get().strip())
 
-        # Validate inputs
+
         if not product_id or not product_name or not product_type or product_price <= 0 or new_stock_quantity <= 0:
             messagebox.showwarning("Invalid Input", "Please enter valid product details.")
             return
 
-        # Call the function to update the available quantity or add a new product
+
         update_or_add_product(product_id, product_name, product_price, product_type, new_stock_quantity, product_listbox)
 
         # Clear the entry fields after saving
