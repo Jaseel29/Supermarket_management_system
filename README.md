@@ -73,5 +73,4 @@ Run the main.py file to see the interface
 ![Screenshot 2025-01-15 004715](https://github.com/user-attachments/assets/ee8c3846-a3d3-456d-be0c-c305b6d8bf1c)
 ![Screenshot 2025-01-15 004725](https://github.com/user-attachments/assets/1d0f6fd6-aa0a-439f-8615-d57fa5655208)
 
-
-
+## <div align="center"> Drop a ⭐ if you like the project</div>
